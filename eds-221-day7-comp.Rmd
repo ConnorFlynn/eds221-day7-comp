@@ -1,0 +1,100 @@
+---
+title: "Joins"
+author: "Connor Flynn"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+library(lubridate)
+```
+
+# Refresher
+
+```{r}
+ex_1 <- penguins %>% 
+  filter(island %in% c("Biscoe", "Dream")) %>% 
+  select(-c(year, sex)) %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  rename(location = island)
+```
+
+
+```{r}
+ex_2 <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  drop_na(flipper_length_mm) %>% 
+  group_by(sex) %>% 
+  summarise(
+    mean_flip = mean(flipper_length_mm), 
+    sd_flip = sd(flipper_length_mm), 
+    sample_size = n()
+  )
+```
+
+# Joins Practice
+
+```{r}
+animals <- tibble::tribble(
+  ~location,   ~species,  ~maturity,
+   "lagoon",   "bobcat",    "adult",
+    "bluff",   "coyote", "juvenile",
+    "creek",      "fox",    "adult",
+     "oaks", "squirrel", "juvenile",
+    "bluff",   "bobcat",    "adult"
+  )
+
+# used datapasta to import - copy/paste
+```
+
+```{r}
+sites <- tibble::tribble(
+           ~location,      ~full_site_name, ~jurisdiction,
+             "beach",       "Goleta Beach",     "SB City",
+            "lagoon",        "UCSB Lagoon",        "UCSB",
+             "bluff",       "Ellwood Mesa",     "SB City",
+              "oaks", "Fremont Campground",        "USFS"
+           )
+
+```
+
+### Full join
+
+```{r}
+animals_full_join <- full_join(animals, sites)
+
+## by = location is assumed
+
+```
+
+
+### Left join 
+
+```{r}
+animals_left_join <- left_join(animals, sites)
+```
+
+### Inner join
+
+```{r}
+animals_inner_join <- inner_join(animals, sites)
+```
+
+
+## Filtering Joins 
+
+```{r}
+animals_semi_join <- semi_join(animals, sites)
+```
+
+```{r}
+animals_anti_join <- anti_join(animals, sites)
+
+
+animals_anti_join <- anti_join(sites, animals)
+
+```
+
